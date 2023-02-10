@@ -31,16 +31,22 @@ if MODEL_ID:
 def download_data():
     print('Downloading dataset files...')
 
-    napi.download_dataset(f"{tmpdir}/train.parquet")
     napi.download_dataset(
-        f"{tmpdir}/live.parquet",
+        f"v4/train.parquet",
+        f"{tmpdir}/v4_train.parquet"
+    )
+    napi.download_dataset(
+        f"v4/live.parquet",
         f"{tmpdir}/live_{current_round}.parquet"
     )
-    napi.download_dataset(f"{tmpdir}/features.json")
+    napi.download_dataset(
+        f"v4/features.json",
+        f"{tmpdir}/v4_features.json"
+    )
 
     live_data = pd.read_parquet(f'{tmpdir}/live_{current_round}.parquet')
 
-    with open(f"{tmpdir}/features.json", "r") as f:
+    with open(f"{tmpdir}/v4_features.json", "r") as f:
         feature_metadata = json.load(f)
     # features = list(feature_metadata["feature_stats"].keys()) # get all the features
     features = feature_metadata["feature_sets"]["small"] # get the small feature set
@@ -59,7 +65,7 @@ def train(features):
 
     model = LGBMRegressor()
 
-    training_data = pd.read_parquet(f'{tmpdir}/train.parquet')
+    training_data = pd.read_parquet(f'{tmpdir}/v4_train.parquet')
 
     logging.info('training model')
     model.fit(
