@@ -46,11 +46,11 @@ def download_data():
 def train(features):
     print('Training model...')
 
-    model_name = 'numerai_model'
+    pickle_file = 'numerai_model.txt'
 
-    if os.path.exists(model_name):
+    if os.path.exists(pickle_file):
         logging.info('loading existing trained model')
-        model = joblib.load(model_name)
+        model = joblib.load(pickle_file)
         return model
 
     model = LGBMRegressor()
@@ -64,7 +64,7 @@ def train(features):
     )
 
     logging.info('saving model')
-    joblib.dump(model, model_name)
+    joblib.dump(model, pickle_file)
 
     gc.collect()
 
