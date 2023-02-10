@@ -4,6 +4,8 @@ Attempt to get a numerai model up and running with a HTTP server.
 
 ## Google cloud example
 
+I basically followed https://cloud.google.com/functions/docs/create-deploy-http-python pretty much the whole way.
+
 I was able to deploy the code using
 
 ```
