@@ -103,9 +103,14 @@ def submit(live_data):
 
 
 
-# def main():
+
 @functions_framework.http
-def hello_http(request):
+def hello_numerai(request):
+    main()
+
+    return 'Numerai Submission!'
+
+def main():
     """ Download, train, predict and submit for this model """
 
     features, live_data = download_data()
@@ -126,8 +131,6 @@ def hello_http(request):
 
     # "garbage collection" (gc) gets rid of unused data and frees up memory
     gc.collect()
-
-    return 'Numerai Submission!'
 
 # if __name__ == '__main__':
 #     main()
