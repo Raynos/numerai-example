@@ -4,6 +4,8 @@ import logging
 import gc
 import joblib
 import json
+import functions_framework
+
 from numerapi import NumerAPI
 from lightgbm import LGBMRegressor
 from pathlib import Path
@@ -101,7 +103,9 @@ def submit(live_data):
 
 
 
-def main():
+# def main():
+@functions_framework.http
+def hello_http(request):
     """ Download, train, predict and submit for this model """
 
     features, live_data = download_data()
@@ -123,5 +127,7 @@ def main():
     # "garbage collection" (gc) gets rid of unused data and frees up memory
     gc.collect()
 
-if __name__ == '__main__':
-    main()
+    return 'Numerai Submission!'
+
+# if __name__ == '__main__':
+#     main()
