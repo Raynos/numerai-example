@@ -5,6 +5,7 @@ import gc
 import joblib
 import json
 import functions_framework
+import tempfile
 
 from numerapi import NumerAPI
 from lightgbm import LGBMRegressor
@@ -20,6 +21,7 @@ MODEL_ID = 'e382072c-6c4f-4220-a908-a467848a1362'
 
 napi = NumerAPI()
 current_round = napi.get_current_round()
+tmpdir = tempfile.gettempdir()
 
 model_name = TRAINED_MODEL_PREFIX
 if MODEL_ID:
@@ -29,14 +31,16 @@ if MODEL_ID:
 def download_data():
     print('Downloading dataset files...')
 
-    Path("./v4").mkdir(parents=False, exist_ok=True)
-    napi.download_dataset("v4/train.parquet")
-    napi.download_dataset("v4/live.parquet", f"v4/live_{current_round}.parquet")
-    napi.download_dataset("v4/features.json")
+    napi.download_dataset(f"{tmpdir}/train.parquet")
+    napi.download_dataset(
+        f"{tmpdir}/live.parquet",
+        f"{tmpdir}/live_{current_round}.parquet"
+    )
+    napi.download_dataset(f"{tmpdir}/features.json")
 
-    live_data = pd.read_parquet(f'v4/live_{current_round}.parquet')
+    live_data = pd.read_parquet(f'{tmpdir}/live_{current_round}.parquet')
 
-    with open("v4/features.json", "r") as f:
+    with open(f"{tmpdir}/features.json", "r") as f:
         feature_metadata = json.load(f)
     # features = list(feature_metadata["feature_stats"].keys()) # get all the features
     features = feature_metadata["feature_sets"]["small"] # get the small feature set
@@ -55,7 +59,7 @@ def train(features):
 
     model = LGBMRegressor()
 
-    training_data = pd.read_parquet('v4/train.parquet')
+    training_data = pd.read_parquet(f'{tmpdir}/train.parquet')
 
     logging.info('training model')
     model.fit(
