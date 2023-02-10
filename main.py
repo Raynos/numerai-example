@@ -32,10 +32,6 @@ def download_data():
     print('Downloading dataset files...')
 
     napi.download_dataset(
-        f"v4/train.parquet",
-        f"{tmpdir}/v4_train.parquet"
-    )
-    napi.download_dataset(
         f"v4/live.parquet",
         f"{tmpdir}/live_{current_round}.parquet"
     )
@@ -65,6 +61,10 @@ def train(features):
 
     model = LGBMRegressor()
 
+    napi.download_dataset(
+        f"v4/train.parquet",
+        f"{tmpdir}/v4_train.parquet"
+    )
     training_data = pd.read_parquet(f'{tmpdir}/v4_train.parquet')
 
     logging.info('training model')
