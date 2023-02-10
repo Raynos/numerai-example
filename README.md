@@ -2,17 +2,23 @@
 
 Attempt to get a numerai model up and running with a HTTP server.
 
-## Google cloud example
+## NGrok example
 
-I was able to deploy the code using
+I run the local app with
 
 ```
-gcloud functions deploy hello_numerai --runtime python310 --trigger-http --allow-unauthenticated --memory 1024 --timeout 300
+NUMERAI_PUBLIC_ID=X NUMERAI_SECRET_KEY=Y python3 main.py 
 ```
 
-and this created a function I could invoke with https://us-central1-numeraiexample.cloudfunctions.net/hello_numerai
+I then run the `ngrok` command
 
-I did have to go into the google cloud UI and set environment variables
+```
+# main.py listens on 4080
+ngrok http 4080
+```
 
-but there is also `--set-env-vars=NUMERAI_PUBLIC_ID=X,NUMERAI_SECRET_KEY=Y` which can be invoked at CLI time to add env vars without opening the UI.
+I copy the ngrok URL `https://c706-186-72-116-169.ngrok.io` into the website info
+for numerai as the compute webhook URL.
+
+Then I run the test button in numerai UI and it seems to work.
 

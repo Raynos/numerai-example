@@ -4,12 +4,11 @@ import logging
 import gc
 import joblib
 import json
-import functions_framework
 import tempfile
 
+from flask import Flask
 from numerapi import NumerAPI
 from lightgbm import LGBMRegressor
-from pathlib import Path
 
 if not 'NUMERAI_PUBLIC_ID' in os.environ:
     raise Exception('missing NUMERAI_PUBLIC_ID')
@@ -17,7 +16,7 @@ if not 'NUMERAI_SECRET_KEY' in os.environ:
     raise Exception('missing NUMERAI_SECRET_KEY')
 
 TRAINED_MODEL_PREFIX = './trained_model'
-MODEL_ID = 'e382072c-6c4f-4220-a908-a467848a1362'
+MODEL_ID = 'f5649b87-c1a2-4534-8a14-995ab8db097e'
 
 napi = NumerAPI()
 current_round = napi.get_current_round()
@@ -111,15 +110,6 @@ def submit(live_data):
     # "garbage collection" (gc) gets rid of unused data and frees up memory
     gc.collect()
 
-
-
-
-@functions_framework.http
-def hello_numerai(request):
-    main()
-
-    return 'Numerai Submission!'
-
 def main():
     """ Download, train, predict and submit for this model """
 
@@ -144,3 +134,15 @@ def main():
 
 # if __name__ == '__main__':
 #     main()
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    print('incoming http request')
+
+    main()
+
+    return 'Numerai submission'
+
+app.run(host='0.0.0.0', port=4080)
